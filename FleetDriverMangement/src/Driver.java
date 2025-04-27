@@ -11,12 +11,20 @@ public class Driver {
         this.licenseNumber = licenseNumber;
     }
 
-    public boolean isAvailable(boolean available){
+    public boolean isAvailable(){
         return available;
     }
 
     public void setAvailable(boolean available){
         this.available = available;
+    }
+
+    public int getId(){
+        return id;
+    }
+
+    public String getName(){
+        return name;
     }
 
 }

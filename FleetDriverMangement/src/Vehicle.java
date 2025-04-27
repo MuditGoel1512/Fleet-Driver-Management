@@ -11,11 +11,19 @@ public class Vehicle {
         this.model = model;
     }
 
-    public boolean isAvailable(boolean available){
+    public boolean isAvailable(){
         return available;
     }
 
     public void setAvailable(boolean available){
         this.available = available;
+    }
+
+    public int getId(){
+        return id;
+    }
+
+    public String getModel(){
+        return model;
     }
 }
