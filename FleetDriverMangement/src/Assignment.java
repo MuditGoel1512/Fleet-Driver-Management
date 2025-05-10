@@ -27,4 +27,12 @@ public class Assignment {
     public int getDistance(){
         return distance;
     }
+    
+    @Override
+    public String toString() {
+        return "Driver: " + driver.getName() + 
+               ", Vehicle: " + vehicle.getModel() + 
+               ", Destination: " + destination + 
+               ", Distance: " + distance + " km";
+    }
 }
