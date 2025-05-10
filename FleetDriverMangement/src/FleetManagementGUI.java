@@ -116,6 +116,15 @@ public class FleetManagementGUI extends JFrame {
                 }
                 
                 String destination = JOptionPane.showInputDialog("Enter the Destination place:");
+                
+                // Check if destination exists
+                if (!fleetManager.locationExists(destination)) {
+                    JOptionPane.showMessageDialog(this, 
+                        "Error: Destination '" + destination + "' does not exist. Please add it as a location first.",
+                        "Location Not Found", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
                 int distance = Integer.parseInt(JOptionPane.showInputDialog("Enter the Approx Distance:"));
                 
                 if (destination != null) {

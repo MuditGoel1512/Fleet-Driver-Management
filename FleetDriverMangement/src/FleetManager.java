@@ -39,6 +39,12 @@ public class FleetManager {
             System.out.println("Vehicle with ID " + vehicleId + " does not exist.");
             return;
         }
+
+        // Check if destination exists in routes
+        if (!routes.containsKey(destination)) {
+            System.out.println("Destination '" + destination + "' does not exist. Please add it as a location first.");
+            return;
+        }
         
         // Create and store the assignment
         Assignment assignment = new Assignment(driver, vehicle, destination, distance);
