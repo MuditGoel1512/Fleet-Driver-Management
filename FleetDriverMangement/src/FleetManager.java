@@ -6,13 +6,13 @@ public class FleetManager {
     private List<Assignment> assignments;
     private Map<String, List<Route>> routes;
     private List<Driver> freeDrivers; // Added missing variable
-    
+
     public FleetManager() {
-        drivers = new HashMap<>();
-        vehicles = new HashMap<>();
-        assignments = new ArrayList<>();
-        routes = new HashMap<>();
-        freeDrivers = new ArrayList<>(); // Initialize freeDrivers
+        drivers = new HashMap<Integer, Driver>();
+        vehicles = new HashMap<Integer, Vehicle>();
+        assignments = new ArrayList<Assignment>();
+        routes = new HashMap<String, List<Route>>();
+        freeDrivers = new ArrayList<Driver>(); // Initialize freeDrivers
     }
     
     public void addDriver(Driver driver) {
@@ -78,7 +78,7 @@ public class FleetManager {
     public void addLocation(String location) {
         // Initialize the list for this location if it doesn't exist
         if (!routes.containsKey(location)) {
-            routes.put(location, new ArrayList<>());
+            routes.put(location, new ArrayList<Route>());
             System.out.println("Location " + location + " added successfully!");
         } else {
             System.out.println("Location " + location + " already exists.");
@@ -133,10 +133,11 @@ public class FleetManager {
     }
 
     // For GUI support of findShortestPath
+    @SuppressWarnings("unchecked")
     public String findShortestPathAsString(String start, String end) {
         // Map locations to indices
-        Map<String, Integer> locToIdx = new HashMap<>();
-        Map<Integer, String> idxToLoc = new HashMap<>();
+        Map<String, Integer> locToIdx = new HashMap<String, Integer>();
+        Map<Integer, String> idxToLoc = new HashMap<Integer, String>();
         int idx = 0;
         for (String loc : routes.keySet()) {
             locToIdx.put(loc, idx);
@@ -154,7 +155,7 @@ public class FleetManager {
         int n = routes.size();
         ArrayList<Edge>[] graph = new ArrayList[n];
         for (int i = 0; i < n; i++) {
-            graph[i] = new ArrayList<>();
+            graph[i] = new ArrayList<Edge>();
         }
 
         // Build the graph
@@ -178,7 +179,7 @@ public class FleetManager {
         dist[srcIdx] = 0;
 
         boolean[] vis = new boolean[n];
-        PriorityQueue<Pair> pq = new PriorityQueue<>();
+        PriorityQueue<Pair> pq = new PriorityQueue<Pair>();
         pq.add(new Pair(srcIdx, 0));
 
         while (!pq.isEmpty()) {
@@ -202,7 +203,7 @@ public class FleetManager {
         if (dist[destIdx] == Integer.MAX_VALUE) {
             return "No path exists from " + start + " to " + end;
         }
-        List<String> path = new ArrayList<>();
+        List<String> path = new ArrayList<String>();
         for (int at = destIdx; at != -1; at = prev[at]) {
             path.add(idxToLoc.get(at));
         }

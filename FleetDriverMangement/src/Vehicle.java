@@ -1,14 +1,11 @@
-public class Vehicle {
+public class Vehicle extends Transport {
     
-    private int id;
-    private String model;
     private int distanceDriven;
     private boolean serviceStatus = false;
     private boolean available = true;
 
     public Vehicle(int id, String model){
-        this.id = id;
-        this.model = model;
+        super(id, model);
     }
 
     public boolean isAvailable(){
@@ -19,11 +16,24 @@ public class Vehicle {
         this.available = available;
     }
 
-    public int getId(){
-        return id;
+    public int getDistanceDriven() {
+        return distanceDriven;
     }
 
-    public String getModel(){
-        return model;
+    public void setDistanceDriven(int distanceDriven) {
+        this.distanceDriven = distanceDriven;
+    }
+
+    public boolean isServiceStatus() {
+        return serviceStatus;
+    }
+
+    public void setServiceStatus(boolean serviceStatus) {
+        this.serviceStatus = serviceStatus;
+    }
+
+    @Override
+    public String toString() {
+        return "Vehicle: " + getModel() + " (ID: " + getId() + ")";
     }
 }

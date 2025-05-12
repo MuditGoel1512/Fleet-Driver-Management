@@ -14,4 +14,9 @@ public class Route {
     public int getDistance() {
         return distance;
     }
+
+    @Override
+    public String toString() {
+        return "Route to " + destination + " (" + distance + " km)";
+    }
 }

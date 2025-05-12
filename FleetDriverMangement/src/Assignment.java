@@ -30,8 +30,8 @@ public class Assignment {
     
     @Override
     public String toString() {
-        return "Driver: " + driver.getName() + 
-               ", Vehicle: " + vehicle.getModel() + 
+        return driver.toString() + 
+               ", " + vehicle.toString() + 
                ", Destination: " + destination + 
                ", Distance: " + distance + " km";
     }

@@ -1,13 +1,10 @@
-public class Driver {
+public class Driver extends Person {
 
-    private String name;
-    private int id;
     private String licenseNumber;
     private boolean available = true;
 
     public Driver(int id, String name, String licenseNumber){
-        this.id = id;
-        this.name = name;
+        super(id, name);
         this.licenseNumber = licenseNumber;
     }
 
@@ -19,12 +16,12 @@ public class Driver {
         this.available = available;
     }
 
-    public int getId(){
-        return id;
+    public String getLicenseNumber(){
+        return licenseNumber;
     }
 
-    public String getName(){
-        return name;
+    @Override
+    public String toString() {
+        return "Driver: " + getName() + " (ID: " + getId() + "), License: " + licenseNumber;
     }
-
 }
