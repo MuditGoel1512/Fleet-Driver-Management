@@ -5,14 +5,14 @@ public class FleetManager {
     private Map<Integer, Vehicle> vehicles;
     private List<Assignment> assignments;
     private Map<String, List<Route>> routes;
-    private List<Driver> freeDrivers; // Added missing variable
+    private List<Driver> freeDrivers;
 
     public FleetManager() {
         drivers = new HashMap<Integer, Driver>();
         vehicles = new HashMap<Integer, Vehicle>();
         assignments = new ArrayList<Assignment>();
         routes = new HashMap<String, List<Route>>();
-        freeDrivers = new ArrayList<Driver>(); // Initialize freeDrivers
+        freeDrivers = new ArrayList<Driver>();
     }
     
     public void addDriver(Driver driver) {
@@ -40,13 +40,11 @@ public class FleetManager {
             return;
         }
 
-        // Check if destination exists in routes
         if (!routes.containsKey(destination)) {
             System.out.println("Destination '" + destination + "' does not exist. Please add it as a location first.");
             return;
         }
         
-        // Create and store the assignment
         Assignment assignment = new Assignment(driver, vehicle, destination, distance);
         assignments.add(assignment);
         
@@ -56,7 +54,7 @@ public class FleetManager {
         System.out.println("Destination: " + destination);
         System.out.println("Distance: " + distance + " km");
     }
-    
+
     public void viewAssignments() {
         if (assignments.isEmpty()) {
             System.out.println("No assignments have been made yet.");
@@ -76,7 +74,6 @@ public class FleetManager {
     }
     
     public void addLocation(String location) {
-        // Initialize the list for this location if it doesn't exist
         if (!routes.containsKey(location)) {
             routes.put(location, new ArrayList<Route>());
             System.out.println("Location " + location + " added successfully!");
@@ -86,7 +83,7 @@ public class FleetManager {
     }
     
     public void addRoute(String source, String destination, int distance) {
-        // Check if both locations exist
+
         if (!routes.containsKey(source)) {
             System.out.println("Source location '" + source + "' does not exist. Please add it first.");
             return;
@@ -97,7 +94,6 @@ public class FleetManager {
             return;
         }
         
-        // Add bidirectional routes
         routes.get(source).add(new Route(destination, distance));
         routes.get(destination).add(new Route(source, distance));
         
@@ -105,11 +101,9 @@ public class FleetManager {
     }
     
     public void findShortestPath(String start, String end) {
-        // Print the result of findShortestPathAsString to console
         System.out.println(findShortestPathAsString(start, end));
     }
     
-    // Add this method to support the GUI view
     public String getAssignmentsAsString() {
         StringBuilder result = new StringBuilder();
         result.append("Current Assignments:\n\n");
@@ -132,10 +126,9 @@ public class FleetManager {
         return result.toString();
     }
 
-    // For GUI support of findShortestPath
     @SuppressWarnings("unchecked")
     public String findShortestPathAsString(String start, String end) {
-        // Map locations to indices
+        
         Map<String, Integer> locToIdx = new HashMap<String, Integer>();
         Map<Integer, String> idxToLoc = new HashMap<Integer, String>();
         int idx = 0;
@@ -158,7 +151,6 @@ public class FleetManager {
             graph[i] = new ArrayList<Edge>();
         }
 
-        // Build the graph
         for (String src : routes.keySet()) {
             int srcIdx = locToIdx.get(src);
             for (Route route : routes.get(src)) {
@@ -169,7 +161,6 @@ public class FleetManager {
             }
         }
 
-        // Dijkstra's algorithm
         int[] dist = new int[n];
         int[] prev = new int[n];
         Arrays.fill(dist, Integer.MAX_VALUE);
@@ -199,7 +190,6 @@ public class FleetManager {
             }
         }
 
-        // Build path
         if (dist[destIdx] == Integer.MAX_VALUE) {
             return "No path exists from " + start + " to " + end;
         }
@@ -220,7 +210,6 @@ public class FleetManager {
         return result.toString();
     }
 
-    // Helper classes for Dijkstra's algorithm
     static class Edge {
         int src, dest, wt;
         Edge(int src, int dest, int wt) {
@@ -241,17 +230,14 @@ public class FleetManager {
         }
     }
 
-    // Helper method to check if a driver exists
     public boolean driverExists(int driverId) {
         return drivers.containsKey(driverId);
     }
     
-    // Helper method to check if a vehicle exists
     public boolean vehicleExists(int vehicleId) {
         return vehicles.containsKey(vehicleId);
     }
     
-    // Helper method to check if a location exists
     public boolean locationExists(String location) {
         return routes.containsKey(location);
     }

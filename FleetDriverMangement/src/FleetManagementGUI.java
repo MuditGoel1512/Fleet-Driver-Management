@@ -7,7 +7,6 @@ import java.awt.geom.RoundRectangle2D;
 public class FleetManagementGUI extends JFrame {
     private FleetManager fleetManager;
     
-    // Modern color scheme
     private static final Color PRIMARY_COLOR = new Color(63, 81, 181);   // Material Indigo
     private static final Color SECONDARY_COLOR = new Color(0, 150, 136); // Material Teal
     private static final Color ACCENT_COLOR = new Color(255, 64, 129);   // Material Pink
@@ -37,7 +36,6 @@ public class FleetManagementGUI extends JFrame {
         buttonPanel.setLayout(new GridLayout(4, 2, 15, 15));
         buttonPanel.setBackground(BG_COLOR);
         
-        // Create buttons with modern style
         JButton addDriverBtn = createStyledButton("Add Driver", PRIMARY_COLOR);
         JButton addVehicleBtn = createStyledButton("Add Vehicle", PRIMARY_COLOR);
         JButton assignDeliveryBtn = createStyledButton("Assign Delivery", SECONDARY_COLOR);
@@ -58,10 +56,8 @@ public class FleetManagementGUI extends JFrame {
         
         mainPanel.add(buttonPanel, BorderLayout.CENTER);
         
-        // Connect exit button to system exit
         exitBtn.addActionListener(e -> System.exit(0));
-        
-        // Add Driver implementation
+
         addDriverBtn.addActionListener(e -> {
             try {
                 int driverId = Integer.parseInt(JOptionPane.showInputDialog("Enter Driver ID:"));
@@ -77,7 +73,7 @@ public class FleetManagementGUI extends JFrame {
             }
         });
         
-        // Add Vehicle implementation
+
         addVehicleBtn.addActionListener(e -> {
             try {
                 int vehicleId = Integer.parseInt(JOptionPane.showInputDialog("Enter Vehicle ID:"));
@@ -91,13 +87,11 @@ public class FleetManagementGUI extends JFrame {
                 JOptionPane.showMessageDialog(this, "Please enter a valid Vehicle ID.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-        
-        // Assign Delivery implementation
+
         assignDeliveryBtn.addActionListener(e -> {
             try {
                 int driverId = Integer.parseInt(JOptionPane.showInputDialog("Enter Driver ID:"));
-                
-                // Check if driver exists
+
                 if (!fleetManager.driverExists(driverId)) {
                     JOptionPane.showMessageDialog(this, 
                         "Error: Driver with ID " + driverId + " does not exist. Please add the driver first.",
@@ -106,8 +100,7 @@ public class FleetManagementGUI extends JFrame {
                 }
                 
                 int vehicleId = Integer.parseInt(JOptionPane.showInputDialog("Enter Vehicle ID:"));
-                
-                // Check if vehicle exists
+
                 if (!fleetManager.vehicleExists(vehicleId)) {
                     JOptionPane.showMessageDialog(this, 
                         "Error: Vehicle with ID " + vehicleId + " does not exist. Please add the vehicle first.",
@@ -116,8 +109,7 @@ public class FleetManagementGUI extends JFrame {
                 }
                 
                 String destination = JOptionPane.showInputDialog("Enter the Destination place:");
-                
-                // Check if destination exists
+
                 if (!fleetManager.locationExists(destination)) {
                     JOptionPane.showMessageDialog(this, 
                         "Error: Destination '" + destination + "' does not exist. Please add it as a location first.",
@@ -136,18 +128,16 @@ public class FleetManagementGUI extends JFrame {
             }
         });
         
-        // View Assignments implementation
+
         viewAssignmentsBtn.addActionListener(e -> {
-            // Create a custom dialog to display assignments
+           
             StringBuilder assignmentsInfo = new StringBuilder();
             
-            // Use a custom method to get assignments info
             String assignments = fleetManager.getAssignmentsAsString();
             
             if (assignments.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "No assignments found.");
             } else {
-                // Display in a scrollable text area
                 JTextArea textArea = new JTextArea(20, 50);
                 textArea.setText(assignments);
                 textArea.setEditable(false);
@@ -156,8 +146,6 @@ public class FleetManagementGUI extends JFrame {
                 JOptionPane.showMessageDialog(this, scrollPane, "Current Assignments", JOptionPane.INFORMATION_MESSAGE);
             }
         });
-        
-        // Add Location implementation
         addLocationBtn.addActionListener(e -> {
             String location = JOptionPane.showInputDialog("Enter Location Name:");
             
@@ -167,12 +155,10 @@ public class FleetManagementGUI extends JFrame {
             }
         });
         
-        // Add Route implementation
         addRouteBtn.addActionListener(e -> {
             try {
                 String source = JOptionPane.showInputDialog("Enter Source Location:");
                 
-                // Check if source location exists
                 if (!fleetManager.locationExists(source)) {
                     JOptionPane.showMessageDialog(this, 
                         "Error: Source location '" + source + "' does not exist. Please add it first.",
@@ -182,7 +168,6 @@ public class FleetManagementGUI extends JFrame {
                 
                 String destination = JOptionPane.showInputDialog("Enter Destination Location:");
                 
-                // Check if destination location exists
                 if (!fleetManager.locationExists(destination)) {
                     JOptionPane.showMessageDialog(this, 
                         "Error: Destination location '" + destination + "' does not exist. Please add it first.",
@@ -201,11 +186,9 @@ public class FleetManagementGUI extends JFrame {
             }
         });
         
-        // Find Best Route implementation
         findRouteBtn.addActionListener(e -> {
             String start = JOptionPane.showInputDialog("Enter Start Location:");
             
-            // Check if start location exists
             if (!fleetManager.locationExists(start)) {
                 JOptionPane.showMessageDialog(this, 
                     "Error: Start location '" + start + "' does not exist. Please add it first.",
@@ -215,7 +198,6 @@ public class FleetManagementGUI extends JFrame {
             
             String end = JOptionPane.showInputDialog("Enter End Location:");
             
-            // Check if end location exists
             if (!fleetManager.locationExists(end)) {
                 JOptionPane.showMessageDialog(this, 
                     "Error: End location '" + end + "' does not exist. Please add it first.",
@@ -226,7 +208,6 @@ public class FleetManagementGUI extends JFrame {
             if (start != null && end != null) {
                 String result = fleetManager.findShortestPathAsString(start, end);
                 
-                // Display in a scrollable text area for longer paths
                 JTextArea textArea = new JTextArea(10, 40);
                 textArea.setText(result);
                 textArea.setEditable(false);
@@ -239,7 +220,6 @@ public class FleetManagementGUI extends JFrame {
         add(mainPanel);
     }
     
-    // Helper method to create styled buttons with rounded corners
     private JButton createStyledButton(String text, Color bgColor) {
         JButton button = new JButton(text) {
             @Override
@@ -247,11 +227,9 @@ public class FleetManagementGUI extends JFrame {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 
-                // Paint rounded rectangle background
                 g2.setColor(bgColor);
                 g2.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 20, 20));
                 
-                // Paint text
                 g2.setColor(TEXT_COLOR);
                 FontMetrics fm = g2.getFontMetrics();
                 int x = (getWidth() - fm.stringWidth(getText())) / 2;
@@ -261,7 +239,6 @@ public class FleetManagementGUI extends JFrame {
             }
         };
         
-        // Button styling
         button.setFont(new Font("Segoe UI", Font.BOLD, 14));
         button.setForeground(TEXT_COLOR);
         button.setBackground(bgColor);
@@ -269,7 +246,6 @@ public class FleetManagementGUI extends JFrame {
         button.setBorderPainted(false);
         button.setContentAreaFilled(false);
         
-        // Hover effect
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
