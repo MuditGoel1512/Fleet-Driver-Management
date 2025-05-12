@@ -134,95 +134,112 @@ public class FleetManager {
 
     // For GUI support of findShortestPath
     public String findShortestPathAsString(String start, String end) {
-        StringBuilder result = new StringBuilder();
-        
-        // Check if locations exist
-        if (!routes.containsKey(start)) {
+        // Map locations to indices
+        Map<String, Integer> locToIdx = new HashMap<>();
+        Map<Integer, String> idxToLoc = new HashMap<>();
+        int idx = 0;
+        for (String loc : routes.keySet()) {
+            locToIdx.put(loc, idx);
+            idxToLoc.put(idx, loc);
+            idx++;
+        }
+
+        if (!locToIdx.containsKey(start)) {
             return "Start location '" + start + "' does not exist.";
         }
-        if (!routes.containsKey(end)) {
+        if (!locToIdx.containsKey(end)) {
             return "End location '" + end + "' does not exist.";
         }
-        
-        // Implement Dijkstra's algorithm for finding shortest path
-        Map<String, Integer> distances = new HashMap<>();
-        Map<String, String> previous = new HashMap<>();
-        PriorityQueue<String> queue = new PriorityQueue<>(
-            Comparator.comparingInt(location -> distances.getOrDefault(location, Integer.MAX_VALUE))
-        );
-        
-        // Initialize distances
-        for (String vertex : routes.keySet()) {
-            if (vertex.equals(start)) {
-                distances.put(vertex, 0);
-            } else {
-                distances.put(vertex, Integer.MAX_VALUE);
-            }
-            queue.add(vertex);
+
+        int n = routes.size();
+        ArrayList<Edge>[] graph = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            graph[i] = new ArrayList<>();
         }
-        
-        // Find shortest path
-        while (!queue.isEmpty()) {
-            String current = queue.poll();
-            
-            // If we've reached the destination, we're done
-            if (current.equals(end)) {
-                break;
+
+        // Build the graph
+        for (String src : routes.keySet()) {
+            int srcIdx = locToIdx.get(src);
+            for (Route route : routes.get(src)) {
+                String dest = route.getDestination();
+                int destIdx = locToIdx.get(dest);
+                int wt = route.getDistance();
+                graph[srcIdx].add(new Edge(srcIdx, destIdx, wt));
             }
-            
-            // Skip unreachable vertices
-            if (distances.get(current) == Integer.MAX_VALUE) {
-                continue;
-            }
-            
-            // Check all neighbors
-            for (Route route : routes.get(current)) {
-                String neighbor = route.getDestination();
-                int alt = distances.get(current) + route.getDistance();
-                
-                if (alt < distances.getOrDefault(neighbor, Integer.MAX_VALUE)) {
-                    distances.put(neighbor, alt);
-                    previous.put(neighbor, current);
-                    
-                    // Update queue (inefficient but simple approach)
-                    queue.remove(neighbor);
-                    queue.add(neighbor);
+        }
+
+        // Dijkstra's algorithm
+        int[] dist = new int[n];
+        int[] prev = new int[n];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        Arrays.fill(prev, -1);
+        int srcIdx = locToIdx.get(start);
+        int destIdx = locToIdx.get(end);
+        dist[srcIdx] = 0;
+
+        boolean[] vis = new boolean[n];
+        PriorityQueue<Pair> pq = new PriorityQueue<>();
+        pq.add(new Pair(srcIdx, 0));
+
+        while (!pq.isEmpty()) {
+            Pair curr = pq.remove();
+            int u = curr.n;
+            if (vis[u]) continue;
+            vis[u] = true;
+
+            for (Edge e : graph[u]) {
+                int v = e.dest;
+                int wt = e.wt;
+                if (dist[u] + wt < dist[v]) {
+                    dist[v] = dist[u] + wt;
+                    prev[v] = u;
+                    pq.add(new Pair(v, dist[v]));
                 }
             }
         }
-        
-        // Build the path
-        if (!previous.containsKey(end) && !start.equals(end)) {
+
+        // Build path
+        if (dist[destIdx] == Integer.MAX_VALUE) {
             return "No path exists from " + start + " to " + end;
         }
-        
         List<String> path = new ArrayList<>();
-        String current = end;
-        
-        while (current != null) {
-            path.add(current);
-            current = previous.get(current);
+        for (int at = destIdx; at != -1; at = prev[at]) {
+            path.add(idxToLoc.get(at));
         }
-        
-        // Reverse the path (it's built backward)
         Collections.reverse(path);
-        
-        // Format the output
+
+        StringBuilder result = new StringBuilder();
         result.append("Best route from ").append(start).append(" to ").append(end).append(":\n");
         result.append("Path: ");
-        
         for (int i = 0; i < path.size(); i++) {
             result.append(path.get(i));
-            if (i < path.size() - 1) {
-                result.append(" -> ");
-            }
+            if (i < path.size() - 1) result.append(" -> ");
         }
-        
-        result.append("\nTotal distance: ").append(distances.get(end)).append(" km");
-        
+        result.append("\nTotal distance: ").append(dist[destIdx]).append(" km");
         return result.toString();
     }
-    
+
+    // Helper classes for Dijkstra's algorithm
+    static class Edge {
+        int src, dest, wt;
+        Edge(int src, int dest, int wt) {
+            this.src = src;
+            this.dest = dest;
+            this.wt = wt;
+        }
+    }
+    static class Pair implements Comparable<Pair> {
+        int n, path;
+        Pair(int n, int path) {
+            this.n = n;
+            this.path = path;
+        }
+        @Override
+        public int compareTo(Pair p2) {
+            return this.path - p2.path;
+        }
+    }
+
     // Helper method to check if a driver exists
     public boolean driverExists(int driverId) {
         return drivers.containsKey(driverId);
